@@ -1,17 +1,5 @@
-.zsh/.zlogin/*
-!.zsh/.zlogin/.gitkeep
-
-.zsh/.zlogout/*
-!.zsh/.zlogout/.gitkeep
-
 .zsh/.zprofile/*
-!.zsh/.zprofile/.gitkeep
-
-.zsh/.zshenv/*
-!.zsh/.zshenv/.gitkeep
-
-.zsh/.zshrc/*
-!.zsh/.zshrc/.gitkeep
+!.zsh/.zprofile/default.zsh
 
 .zsh/completions/*
 !.zsh/completions/.gitkeep
