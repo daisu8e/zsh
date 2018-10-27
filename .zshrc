@@ -182,9 +182,8 @@ case "${TERM}" in
         ;;
 esac
 
-
-## load user .zshrc configuration file
+## load other .zshrc files
 #
-for i in ~/.zsh/*.zsh; do
+for i in ~/.zsh/.zshrc/*.zsh; do
   source $i
 done
