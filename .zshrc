@@ -181,9 +181,3 @@ case "${TERM}" in
         }
         ;;
 esac
-
-## load other .zshrc files
-#
-for i in ~/.zsh/.zshrc/*.zsh; do
-  source $i
-done

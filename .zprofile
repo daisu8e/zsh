@@ -1,8 +1,6 @@
-export LC_ALL=a_JP.UTF-8
-export PATH="$PATH:/Users/kat/Library/Android/sdk/platform-tools"
+source ~/.zsh/.zprofile/default.zsh
 
-## load other .zprofile files
-#
 for i in ~/.zsh/.zprofile/*.zsh; do
+  [ $i = ~/.zsh/.zprofile/default.zsh ] && continue
   source $i
 done
