@@ -1,5 +1,8 @@
 .zsh/.zprofile/*
 !.zsh/.zprofile/default.zsh
 
+.zsh/.zshrc/*
+!.zsh/.zshrc/default.zsh
+
 .zsh/completions/*
 !.zsh/completions/.gitkeep
