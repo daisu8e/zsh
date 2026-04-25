@@ -66,6 +66,7 @@ Use this as the current release version. Stop and ask before proceeding if `VERS
 - Stop and ask before proceeding if:
   - the next version cannot be confirmed,
   - the version bump does not change `VERSION`,
+  - `$release_tag` already exists locally or on `origin`,
   - the PR is not mergeable,
   - CI, branch protection, or GitHub permissions block the merge.
 
@@ -110,7 +111,16 @@ cat VERSION
 
 Set `release_version` to the new version number and `release_tag` to `v$release_version`.
 
-5. Commit the version bump:
+5. Confirm the release tag does not already exist:
+
+```bash
+test -z "$(git tag --list "$release_tag")"
+test -z "$(git ls-remote --tags origin "$release_tag")"
+```
+
+Stop and ask before proceeding if either command returns an existing tag.
+
+6. Commit the version bump:
 
 ```bash
 git status --short
@@ -124,19 +134,19 @@ Stage `CHANGELOG.md` only if it already exists and was intentionally updated for
 git commit -m "Bump version to $release_version"
 ```
 
-6. Push the branch:
+7. Push the branch:
 
 ```bash
 git push origin branch-x
 ```
 
-7. Create the PR:
+8. Create the PR:
 
 ```bash
 gh pr create --base "$base_branch" --head branch-x --title "Release $release_tag" --body "<summary and verification>"
 ```
 
-8. Capture the PR number from the output, then verify the PR:
+9. Capture the PR number from the output, then verify the PR:
 
 ```bash
 gh pr view <PR_NUMBER> --json number,baseRefName,headRefName,state,isDraft,mergeable,url
@@ -144,13 +154,13 @@ gh pr view <PR_NUMBER> --json number,baseRefName,headRefName,state,isDraft,merge
 
 Proceed only when `baseRefName` matches `$base_branch`, `headRefName` is `branch-x`, `state` is `OPEN`, and `mergeable` is `MERGEABLE`.
 
-9. Merge with a merge commit and delete the remote branch:
+10. Merge with a merge commit and delete the remote branch:
 
 ```bash
 gh pr merge <PR_NUMBER> --merge --delete-branch
 ```
 
-10. Capture the PR merge commit SHA:
+11. Capture the PR merge commit SHA:
 
 ```bash
 gh pr view <PR_NUMBER> --json mergeCommit
@@ -158,21 +168,21 @@ gh pr view <PR_NUMBER> --json mergeCommit
 
 Set `merge_sha` to the returned merge commit OID. Stop if GitHub does not report a merge commit.
 
-11. Ensure the local default branch is current:
+12. Ensure the local default branch is current:
 
 ```bash
 git checkout "$base_branch"
 git pull --ff-only origin "$base_branch"
 ```
 
-12. Tag the PR merge commit and push the tag:
+13. Tag the PR merge commit and push the tag:
 
 ```bash
 git tag "$release_tag" "$merge_sha"
 git push origin "$release_tag"
 ```
 
-13. Delete the old local branch if it still exists:
+14. Delete the old local branch if it still exists:
 
 ```bash
 git branch --list branch-x
@@ -181,7 +191,7 @@ git branch -d branch-x
 
 If `gh pr merge --delete-branch` already deleted the local branch, skip `git branch -d branch-x`.
 
-14. Recreate the branch from the latest default branch:
+15. Recreate the branch from the latest default branch:
 
 ```bash
 git checkout -b branch-x
