@@ -4,17 +4,67 @@
 #
 autoload colors
 colors
-case ${UID} in
-    0)
-        PROMPT="%{${fg[cyan]}%}$(echo ${HOST%%.*} | tr '[a-z]' '[A-Z]') %B%{${fg[yellow]}%}%/#%{${reset_color}%}%b "
-        PROMPT2="%B%{${fg[yellow]}%}%_#%{${reset_color}%}%b "
-        SPROMPT="%B%{${fg[yellow]}%}%r is correct? [n,y,a,e]:%{${reset_color}%}%b "
+autoload -Uz vcs_info
+setopt prompt_subst
+
+case "${ZSH_COLOR_MODE}" in
+    light|dark)
         ;;
     *)
-        PROMPT="%{${fg[yellow]}%}%/%%%{${reset_color}%} "
-        PROMPT2="%{${fg[yellow]}%}%_%%%{${reset_color}%} "
-        SPROMPT="%{${fg[yellow]}%}%r is correct? [n,y,a,e]:%{${reset_color}%} "
-        [ -n "${REMOTEHOST}${SSH_CONNECTION}" ] && PROMPT="%{${fg[cyan]}%}$(echo ${HOST%%.*} | tr '[a-z]' '[A-Z]') ${PROMPT}"
+        ZSH_COLOR_MODE=dark
+        ;;
+esac
+
+case "${ZSH_COLOR_MODE}" in
+    light)
+        zsh_prompt_color=$'%{\e[38;2;208;255;29m\e[48;2;64;64;64m%}'
+        zsh_prompt2_color=$'%{\e[38;2;0;0;0m\e[48;2;208;255;29m%}'
+        zsh_sprompt_color=$'%{\e[38;2;0;0;0m\e[48;2;208;255;29m%}'
+        zsh_host_color=$'%{\e[38;2;208;255;29m\e[48;2;64;64;64m%}'
+        zsh_root_prompt_color=$'%{\e[38;2;208;255;29m\e[48;2;64;64;64m%}'
+        zsh_git_branch_color=$'%{\e[38;2;208;255;29m\e[48;2;128;128;128m%}'
+        zsh_xterm_lscolors=exfxcxdxbxegedabagacadah
+        zsh_xterm_ls_colors='rs=0:fi=30:di=90:ln=37:so=90:pi=90:ex=38;2;208;255;29:bd=90:cd=90:su=38;2;208;255;29:sg=38;2;208;255;29:tw=90:ow=90'
+        zsh_xterm_list_colors=('fi=30' 'di=90' 'ln=37' 'so=90' 'pi=90' 'ex=38;2;208;255;29' 'bd=90' 'cd=90' 'su=38;2;208;255;29' 'sg=38;2;208;255;29' 'tw=90' 'ow=90')
+        zsh_cons25_lscolors=exfxcxdxbxegedabagacadah
+        zsh_cons25_ls_colors='rs=0:fi=30:di=90:ln=37:so=90:pi=90:ex=38;2;208;255;29:bd=90:cd=90:su=38;2;208;255;29:sg=38;2;208;255;29:tw=90:ow=90'
+        zsh_cons25_list_colors=('fi=30' 'di=90' 'ln=37' 'so=90' 'pi=90' 'ex=38;2;208;255;29' 'bd=90' 'cd=90' 'su=38;2;208;255;29' 'sg=38;2;208;255;29' 'tw=90' 'ow=90')
+        zsh_jfbterm_lscolors=exfxcxdxbxegedabagacadah
+        zsh_jfbterm_ls_colors='rs=0:fi=30:di=90:ln=37:so=90:pi=90:ex=38;2;208;255;29:bd=90:cd=90:su=38;2;208;255;29:sg=38;2;208;255;29:tw=90:ow=90'
+        zsh_jfbterm_list_colors=('fi=30' 'di=90' 'ln=37' 'so=90' 'pi=90' 'ex=38;2;208;255;29' 'bd=90' 'cd=90' 'su=38;2;208;255;29' 'sg=38;2;208;255;29' 'tw=90' 'ow=90')
+        ;;
+    dark)
+        zsh_prompt_color=$'%{\e[38;2;208;255;29m\e[48;2;64;64;64m%}'
+        zsh_prompt2_color=$'%{\e[38;2;0;0;0m\e[48;2;208;255;29m%}'
+        zsh_sprompt_color=$'%{\e[38;2;0;0;0m\e[48;2;208;255;29m%}'
+        zsh_host_color=$'%{\e[38;2;208;255;29m\e[48;2;64;64;64m%}'
+        zsh_root_prompt_color=$'%{\e[38;2;208;255;29m\e[48;2;64;64;64m%}'
+        zsh_git_branch_color=$'%{\e[38;2;208;255;29m\e[48;2;128;128;128m%}'
+        zsh_xterm_lscolors=exfxcxdxbxacadabafaggx
+        zsh_xterm_ls_colors='di=34:ln=35:so=32:pi=33:ex=31:bd=30;42:cd=30;43:su=30;41:sg=30;45:tw=30;46:ow=36'
+        zsh_xterm_list_colors=('di=34' 'ln=35' 'so=32' 'ex=31' 'bd=46;34' 'cd=43;34')
+        zsh_cons25_lscolors=ExFxCxdxBxegedabagacad
+        zsh_cons25_ls_colors='di=01;34:ln=01;35:so=01;32:ex=01;31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
+        zsh_cons25_list_colors=('di=;34;1' 'ln=;35;1' 'so=;32;1' 'ex=31;1' 'bd=46;34' 'cd=43;34')
+        zsh_jfbterm_lscolors=gxFxCxdxBxegedabagacad
+        zsh_jfbterm_ls_colors='di=01;36:ln=01;35:so=01;32:ex=01;31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
+        zsh_jfbterm_list_colors=('di=;36;1' 'ln=;35;1' 'so=;32;1' 'ex=31;1' 'bd=46;34' 'cd=43;34')
+        ;;
+esac
+
+zstyle ':vcs_info:git:*' formats "${zsh_git_branch_color} %b %{${reset_color}%}"
+
+case ${UID} in
+    0)
+        PROMPT="${zsh_host_color} $(echo ${HOST%%.*} | tr '[a-z]' '[A-Z]') %B${zsh_root_prompt_color}%~ %{${reset_color}%}%b"'${vcs_info_msg_0_}'" "
+        PROMPT2="%B${zsh_prompt2_color}%_#%{${reset_color}%}%b "
+        SPROMPT="%B${zsh_sprompt_color}%r is correct? [n,y,a,e]:%{${reset_color}%}%b "
+        ;;
+    *)
+        PROMPT="${zsh_host_color} %~ %{${reset_color}%}"'${vcs_info_msg_0_}'" "
+        PROMPT2="${zsh_prompt2_color}%_%%%{${reset_color}%} "
+        SPROMPT="${zsh_sprompt_color}%r is correct? [n,y,a,e]:%{${reset_color}%} "
+        [ -n "${REMOTEHOST}${SSH_CONNECTION}" ] && PROMPT="${zsh_host_color}$(echo ${HOST%%.*} | tr '[a-z]' '[A-Z]')${PROMPT}"
         ;;
 esac
 
@@ -131,39 +181,40 @@ esac
 ## generator
 # https://geoff.greer.fm/lscolors/
 case "${TERM}" in
-    xterm|xterm-color)
-        export LSCOLORS=exfxcxdxbxacadabafaggx
-        export LS_COLORS='di=34:ln=35:so=32:pi=33:ex=31:bd=30;42:cd=30;43:su=30;41:sg=30;45:tw=30;46:ow=36'
-        zstyle ':completion:*' list-colors 'di=34' 'ln=35' 'so=32' 'ex=31' 'bd=46;34' 'cd=43;34'
+    xterm|xterm-color|xterm-256color)
+        export LSCOLORS=${zsh_xterm_lscolors}
+        export LS_COLORS=${zsh_xterm_ls_colors}
+        zstyle ':completion:*' list-colors "${zsh_xterm_list_colors[@]}"
         ;;
     kterm-color)
         stty erase '^H'
-        export LSCOLORS=exfxcxdxbxacadabafaggx
-        export LS_COLORS='di=34:ln=35:so=32:pi=33:ex=31:bd=30;42:cd=30;43:su=30;41:sg=30;45:tw=30;46:ow=36'
-        zstyle ':completion:*' list-colors 'di=34' 'ln=35' 'so=32' 'ex=31' 'bd=46;34' 'cd=43;34'
+        export LSCOLORS=${zsh_xterm_lscolors}
+        export LS_COLORS=${zsh_xterm_ls_colors}
+        zstyle ':completion:*' list-colors "${zsh_xterm_list_colors[@]}"
         ;;
     kterm)
         stty erase '^H'
         ;;
     cons25)
         unset LANG
-        export LSCOLORS=ExFxCxdxBxegedabagacad
-        export LS_COLORS='di=01;34:ln=01;35:so=01;32:ex=01;31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
-        zstyle ':completion:*' list-colors 'di=;34;1' 'ln=;35;1' 'so=;32;1' 'ex=31;1' 'bd=46;34' 'cd=43;34'
+        export LSCOLORS=${zsh_cons25_lscolors}
+        export LS_COLORS=${zsh_cons25_ls_colors}
+        zstyle ':completion:*' list-colors "${zsh_cons25_list_colors[@]}"
         ;;
     jfbterm-color)
-        export LSCOLORS=gxFxCxdxBxegedabagacad
-        export LS_COLORS='di=01;36:ln=01;35:so=01;32:ex=01;31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
-        zstyle ':completion:*' list-colors 'di=;36;1' 'ln=;35;1' 'so=;32;1' 'ex=31;1' 'bd=46;34' 'cd=43;34'
+        export LSCOLORS=${zsh_jfbterm_lscolors}
+        export LS_COLORS=${zsh_jfbterm_ls_colors}
+        zstyle ':completion:*' list-colors "${zsh_jfbterm_list_colors[@]}"
         ;;
 esac
 
 # set terminal title including current directory
 #
-case "${TERM}" in
-    xterm|xterm-color|kterm|kterm-color)
-        precmd() {
+precmd() {
+    vcs_info
+    case "${TERM}" in
+        xterm|xterm-color|xterm-256color|kterm|kterm-color)
             echo -ne "\033]0;${USER}@${HOST%%.*}:${PWD}\007"
-        }
-        ;;
-esac
+            ;;
+    esac
+}
