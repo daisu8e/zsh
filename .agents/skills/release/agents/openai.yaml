@@ -1,4 +1,4 @@
 interface:
   display_name: "Release"
-  short_description: "Push, PR, merge, and refresh a branch"
-  default_prompt: "Use $release to merge the current branch into the default branch and recreate it from the latest default branch."
+  short_description: "Version, tag, merge, and refresh a branch"
+  default_prompt: "Use $release to bump VERSION, merge the current branch into the default branch, tag the merge commit, and recreate the branch."
